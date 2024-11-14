@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kassenbuch</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    input, button {
+      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <form id="myForm">
+    <input type="text" id="field1" placeholder="Field 1" required>
+    <input type="text" id="field2" placeholder="Field 2" required>
+    <input type="text" id="field3" placeholder="Field 3" required>
+    <input type="text" id="field4" placeholder="Field 4">
+    <button type="submit">Submit</button>
+  </form>
+</div>
+
+<script>
+  document.getElementById('myForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    // Add your Google Sheets API key and Sheet ID here
+    const apiKey = 'YOUR_API_KEY';
+    const sheetId = 'YOUR_SHEET_ID';
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/A1:append?valueInputOption=RAW&key=${apiKey}`;
+    
+    const values = [
+      [
+        document.getElementById('field1').value,
+        document.getElementById('field2').value,
+        document.getElementById('field3').value,
+        document.getElementById('field4').value
+      ]
+    ];
+    
+    const body = {
+      values: values
+    };
+    
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    })
+    .then(response => response.json())
+    .then(json => {
+      console.log('Success:', json);
+      alert('Data submitted successfully');
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('An error occurred');
+    });
+  });
+</script>
+
+</body>
+</html>
